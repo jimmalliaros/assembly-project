@@ -3,7 +3,7 @@
 	N:	.word 5
 	array:	.space 20
 	str:	.asciiz "Enter 5 integers: "
-	space:	.ascii " "
+	my_space: .ascii " "
 	newline:	.asciiz "\n"
 	display_str:	.asciiz " Array of integers: "
 	sort_str:		.asciiz " Sorting array..."
@@ -18,7 +18,17 @@
 	
 	jal	displayArray
 	
-	jal	sortArray
+	la	$a0,newline
+	li	$v0,4
+	syscall
+	
+	la	$a1,array
+	
+	jal sortArray
+	
+	
+	jal displayArray
+	
 	
 	li	$v0,10
 	syscall
@@ -74,17 +84,14 @@ displayArray:
 		add	$t1,$t1,4
 		
 		
-		la	$a0,space
-		li	$v0,4
+		li	$a0,32
+		li	$v0,11
 		syscall
 		
 		j	display_loop
 		
 	
-	
-	
-	
-	
+
 
 sortArray:
 	la	$a0,sort_str
@@ -92,33 +99,52 @@ sortArray:
 	syscall
 	
 	lw	$t0,N
-	sub	$t0,$t0,1
-	li	$t1,0 #counter for i
-	li	$t2,0#counter for j
+	sub $t0,$t0,1
+	lw	$t3,N
+	add	$t2,$t0,0
 	
 	first_loop:
-		beq $t1,$t0,exit1
-			sub $t3,$t0,1
-			second_loop:
-				beq $t2,$t3,exit2
-				j	swap
+		beq $t0,0,exit
+		sub $t0,$t0,1
+		li	$t1,0
+		
+		second_loop:
+			beq $t1,$t2,first_loop
+			la	$a1,array
+			move $a2,$t1
+			jal	swap
+			j	second_loop
 			
+
 	
 swap:
-	add	$t4,$t2,1
-	lw	$t6,array($t2)
-	lw	$t7,array($t4)
-	blt	$t6,$t7,second_loop
-	add	$t5,$t2,0
-	move	$t2,$t4
-	move	$t4,$t5
-	j		second_loop
+	move	$s2,$a2
+	add		$s3,$s2,1
+	mul		$s2,$s2,4
+	add		$s3,$s2,4
+	lw		$t5,array($s2)
+	lw		$t6,array($s3)
+	ble		$t5,$t6,exit
+	move	$t7,$t5
+	move	$t5,$t6
+	move	$t6,$t7
+	
+	
+		
+	
+	
+
+	
+	
+			
+	
+	
 	
 	
 
 exit:
-	jr	$ra
 	
-	la	$a0,newline
-	li	$v0,4
-	syscall
+	
+	
+	
+	jr	$ra
