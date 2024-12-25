@@ -94,28 +94,37 @@ displayArray:
 
 
 sortArray:
+	add	$sp,$sp,-4
+	sw	$ra,0($sp)
+	
+	
+	
 	la	$a0,sort_str
 	li	$v0,4
 	syscall
 	
 	lw	$t0,N
-	sub $t0,$t0,1
-	lw	$t3,N
-	add	$t2,$t0,0
+	sub	$t0,$t0,1
+	la	$t1,array
+	li	$t2,0#i
+	li	$t3,0#j
 	
 	first_loop:
-		beq $t0,0,exit
-		sub $t0,$t0,1
-		li	$t1,0
-		
-		second_loop:
-			beq $t1,$t2,first_loop
-			la	$a1,array
-			move $a2,$t1
-			jal	swap
-			j	second_loop
-			
-
+		bge	$t2,$t0,done
+			sub	$t4,$t0,$t2
+			second_loop:
+					bge	$t3,$t4,first_loop
+					la	$a1,array
+					move	$a2,$t3
+					add	$t2,$t2,1
+					add	$t3,$t3,1
+					jal		swap
+					j	second_loop
+	done:
+		lw	$ra,0($sp)
+		add	$sp,$sp,4
+	
+		jr	$ra
 	
 swap:
 	move	$s2,$a2
