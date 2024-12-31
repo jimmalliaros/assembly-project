@@ -112,14 +112,19 @@ sortArray:
 	first_loop:
 		bge	$t2,$t0,done
 			sub	$t4,$t0,$t2
+			add	$t2,$t2,1
+			li	$t3,0
+			
 			second_loop:
 					bge	$t3,$t4,first_loop
 					la	$a1,array
 					move	$a2,$t3
-					add	$t2,$t2,1
-					add	$t3,$t3,1
+					
+					
 					jal		swap
+					add	$t3,$t3,1
 					j	second_loop
+			
 	done:
 		lw	$ra,0($sp)
 		add	$sp,$sp,4
@@ -130,13 +135,15 @@ swap:
 	move	$s2,$a2
 	add		$s3,$s2,1
 	mul		$s2,$s2,4
-	add		$s3,$s2,4
+	mul		$s3,$s3,4
 	lw		$t5,array($s2)
 	lw		$t6,array($s3)
 	ble		$t5,$t6,exit
 	move	$t7,$t5
 	move	$t5,$t6
 	move	$t6,$t7
+	sw		$t5,array($s2)
+	sw		$t6,array($s3)
 	
 	
 		
